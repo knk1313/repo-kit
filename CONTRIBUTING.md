@@ -22,6 +22,8 @@
 ```bash
 for f in skills/*/scripts/*.sh; do bash -n "$f"; done
 shellcheck -S warning skills/*/scripts/*.sh
+for f in .claude-plugin/*.json skills/*/assets/*.json; do jq empty "$f"; done
+ruby -ryaml -e 'ARGV.each { |f| YAML.load_file(f) }' skills/setup/assets/dependabot.yml skills/setup/assets/workflows/*.yml .github/*.yml .github/workflows/*.yml
 claude plugin validate .
 ```
 
