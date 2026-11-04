@@ -62,6 +62,16 @@ GitHubのリポジトリを整え、診断する作業を、Claude Codeに進め
 
 診断のスキルは、一つずつ置いても動きます。health-checkは、ほかの診断のスキルを呼んで深掘りするため、一緒に置きます（なければ、health-checkが自分で調べます）。
 
+### Claudeアプリ
+
+診断のスキルだけを、Claudeアプリでも使えます。setupとpublishは、手元のGitとGitHub CLIを使うため、アプリでは使えません。
+
+1. [Releases](https://github.com/knk1313/repo-kit/releases)から、使うスキルのzip（`health-check.zip`、`security-audit.zip`など）を取ります。zipは1つにつき1スキルです。zipは、リリースを公開したときにGitHub Actionsが作ります
+2. Claudeアプリの設定の、スキルの画面から、zipを1つずつアップロードします。health-checkを使うなら、深掘りに使う診断のスキルも一緒に入れます
+3. アプリでは、コード実行を有効にし、調べるリポジトリをzipで添付します
+
+新しい版を使うときは、新しい版のzipをアップロードし直します。
+
 ## 使い方
 
 対象のリポジトリで、Claude Codeに次のように頼みます。
@@ -106,7 +116,7 @@ Claude Codeに組み込みの`/security-review`は、今のブランチの差分
 
 ## 動作環境
 
-- Claude Code
+- Claude Code（診断のスキルは、Claudeアプリでも使える）
 - Git、jq
 - publishに、[GitHub CLI](https://cli.github.com/)（`gh auth login`済み）
 - publishの校正に、Node.js 18以上と[docs-rules](https://github.com/knk1313/docs-rules)（なければ校正を飛ばす）
