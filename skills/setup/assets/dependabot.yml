@@ -1,0 +1,31 @@
+# 依存パッケージの更新を、週に1回PRで届ける。
+# 使わないエコシステムのブロックは消す。directory はマニフェストのある場所に合わせる。
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      # 開発用の依存の小さな更新（minor・patch）は1つのPRにまとめる
+      development:
+        dependency-type: development
+        update-types: [minor, patch]
+    # 大きな版上げを止めたい依存があれば ignore に書く（理由もコメントで残す）
+    # ignore:
+    #   - dependency-name: typescript
+    #     update-types: ["version-update:semver-major"]
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    # 「>=」で範囲を指定しているので、新しい版が範囲に入らないときだけPRを出す
+    versioning-strategy: increase-if-necessary
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

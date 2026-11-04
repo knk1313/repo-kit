@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# ワークフローの権限は、コードを読むことだけにする（リポジトリの既定が変わっても広がらないように）
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version-file: .python-version
+          cache: pip
+      # テスト用の依存のファイルに合わせる（requirements-dev.txt、pyproject.toml の extras など）
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      # リポジトリのテストの実行方法に合わせる
+      - run: python -m pytest

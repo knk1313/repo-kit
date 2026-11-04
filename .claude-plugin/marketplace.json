@@ -1,0 +1,14 @@
+{
+  "name": "repo-kit",
+  "owner": {
+    "name": "Yuta Kondo"
+  },
+  "description": "repo-kit を Claude Code プラグインとして配布するマーケットプレイス",
+  "plugins": [
+    {
+      "name": "repo-kit",
+      "source": "./",
+      "description": "リポジトリの土台になるファイルを足すsetupと、公開前の点検・検査・GitHubの設定を進めるpublishのスキル"
+    }
+  ]
+}
