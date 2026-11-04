@@ -88,7 +88,7 @@ README に次の節があるかを見て、足りないものを書く。
 
 - About：説明、topics、ホームページの URL
 - Wiki を無効にする、マージしたブランチを自動で消す
-- main の保護（Ruleset：削除と force push の禁止、PR 必須、CI の必須チェック）
+- main の保護（Ruleset：削除と force push の禁止、PR 必須、CI の必須チェック）。入れると main に直接 push できなくなるため、承認を得るときにそのことを伝え、設定の最後に入れる
 - secret scanning と push protection、Dependabot alerts と security updates、非公開の脆弱性報告
 - 用途に応じて：テンプレートリポジトリ、Discussions、GitHub Pages、Release
 
