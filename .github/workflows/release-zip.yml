@@ -1,0 +1,50 @@
+name: Release zip
+
+# Releaseを公開したときに、スキルごとのzipを作ってそのReleaseに添付する。
+# Claudeアプリのスキルのアップロードに使う。アプリのzipは1つにつき1スキルで、一番上にスキルのフォルダーが来る形にする。
+# setupとpublishは、手元のgitとgh、GitHubの設定を使うため、アプリでは動かない。zipには入れない
+on:
+  release:
+    types: [published]
+  # 既存のReleaseに添付し直すとき。タグ名を渡す
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "zipを添付するReleaseのタグ（例：v0.2.0）"
+        required: true
+
+permissions: {}
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    permissions:
+      # Releaseへの添付に使う
+      contents: write
+    env:
+      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.TAG }}
+          persist-credentials: false
+      - name: スキルごとのzipを作る
+        working-directory: skills
+        run: |
+          mkdir -p "$RUNNER_TEMP/zip"
+          for d in */; do
+            s="${d%/}"
+            case "$s" in setup|publish) continue ;; esac
+            zip -r -X "$RUNNER_TEMP/zip/$s.zip" "$s" -x '*.DS_Store'
+          done
+      - name: zipの中身を確かめる
+        run: |
+          for z in "$RUNNER_TEMP"/zip/*.zip; do
+            s="$(basename "$z" .zip)"
+            unzip -l "$z"
+            unzip -l "$z" | grep -q " $s/SKILL.md$" || { echo "$z: $s/SKILL.md がない"; exit 1; }
+          done
+      - name: Releaseに添付する
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$TAG" "$RUNNER_TEMP"/zip/*.zip --clobber --repo "$GITHUB_REPOSITORY"
