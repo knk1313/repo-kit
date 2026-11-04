@@ -19,6 +19,8 @@
 | --- | --- |
 | スクリプトの文法 | `for f in skills/*/scripts/*.sh; do bash -n "$f"; done` |
 | スクリプトの静的検査 | `shellcheck -S warning skills/*/scripts/*.sh` |
+| JSONの検証 | `for f in .claude-plugin/*.json skills/*/assets/*.json; do jq empty "$f"; done` |
+| YAMLの検証 | `ruby -ryaml -e 'ARGV.each { \|f\| YAML.load_file(f) }' skills/setup/assets/dependabot.yml skills/setup/assets/workflows/*.yml .github/*.yml .github/workflows/*.yml` |
 | プラグインの検証 | `claude plugin validate .` |
 | 試しに動かす | `bash skills/setup/scripts/check.sh <リポジトリ>`、`bash skills/publish/scripts/audit.sh <リポジトリ>` |
 

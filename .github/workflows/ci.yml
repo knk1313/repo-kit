@@ -24,9 +24,10 @@ jobs:
       # プラグインの設定とテンプレートが、JSON・YAML として読めること
       - run: for f in .claude-plugin/*.json skills/*/assets/*.json; do jq empty "$f"; done
       - run: ruby -ryaml -e 'ARGV.each { |f| YAML.load_file(f) }' skills/setup/assets/dependabot.yml skills/setup/assets/workflows/*.yml .github/*.yml .github/workflows/*.yml
-      # SKILL.md の先頭に name と description があること
+      # SKILL.md の先頭に name と description があり、name がディレクトリ名と一致すること
       - run: |
           for f in skills/*/SKILL.md; do
             head -1 "$f" | grep -qx -- '---' || { echo "$f: frontmatter がない"; exit 1; }
             grep -q '^name: ' "$f" && grep -q '^description: ' "$f" || { echo "$f: name か description がない"; exit 1; }
+            grep -qx "name: $(basename "$(dirname "$f")")" "$f" || { echo "$f: name がディレクトリ名と違う"; exit 1; }
           done
