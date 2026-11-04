@@ -7,11 +7,14 @@ docs-rules のスキルを読み込んで手順どおりに進めると、`rules
 docs-rules のスキルは読み込まない（Skill ツールで呼ばない）。採点のスクリプトだけを使う。
 
 ```bash
-SCORE=$(ls -t ~/.claude/plugins/cache/docs-rules/docs-rules/*/skills/docs-rules/evaluators/score.mjs \
-              ~/.claude/plugins/marketplaces/docs-rules/skills/docs-rules/evaluators/score.mjs \
+# bash で実行する。zsh では、一致しないパターンが1つでもあると、コマンド全体が止まるため
+SCORE=$(bash -c 'ls -t ~/.claude/plugins/cache/*/docs-rules/*/skills/docs-rules/evaluators/score.mjs \
+              ~/.claude/plugins/marketplaces/*/skills/docs-rules/evaluators/score.mjs \
               ~/.claude/skills/*/docs-rules/evaluators/score.mjs \
-              ~/.claude/skills/docs-rules/evaluators/score.mjs 2>/dev/null | head -1)
+              ~/.claude/skills/docs-rules/evaluators/score.mjs 2>/dev/null | head -1')
 ```
+
+プラグインの置き場所は、入れたマーケットプレイスによって変わる（`docs-rules` から入れたか、`knk1313-skills` から入れたか）。そのため、マーケットプレイスの名前の部分は `*` にしている。
 
 見つからない、または `node` がない場合は、校正を飛ばし、そのことを報告する。docs-rules のスキルに切り替えない。
 
