@@ -3,6 +3,7 @@ name: Release zip
 # Releaseを公開したときに、スキルごとのzipを作ってそのReleaseに添付する。
 # Claudeアプリのスキルのアップロードに使う。アプリのzipは1つにつき1スキルで、一番上にスキルのフォルダーが来る形にする。
 # setupとpublishは、手元のgitとgh、GitHubの設定を使うため、アプリでは動かない。zipには入れない
+# 診断の観点をまとめて1回で入れられるよう、app/repo-review を元にした repo-review.zip も作る
 on:
   release:
     types: [published]
@@ -37,6 +38,23 @@ jobs:
             case "$s" in setup|publish) continue ;; esac
             zip -r -X "$RUNNER_TEMP/zip/$s.zip" "$s" -x '*.DS_Store'
           done
+      # 診断の観点を一つにまとめた repo-review。観点ごとの SKILL.md を、frontmatter を除いて references/ に写す。
+      # 書き込みを伴う test-add は入れない
+      - name: まとめた repo-review の zip を作る
+        run: |
+          b="$RUNNER_TEMP/bundle/repo-review"
+          mkdir -p "$b/references"
+          cp app/repo-review/SKILL.md "$b/"
+          for d in skills/*/; do
+            s="$(basename "$d")"
+            case "$s" in setup|publish|test-add) continue ;; esac
+            awk 'NR==1 && /^---$/ {f=1; next} f && /^---$/ {f=0; next} !f' "$d/SKILL.md" > "$b/references/$s.md"
+          done
+          # SKILL.md が読むと書いたファイルが、すべてあること
+          for r in $(grep -o 'references/[a-z0-9-]*\.md' "$b/SKILL.md" | sort -u); do
+            [ -f "$b/$r" ] || { echo "$r がない"; exit 1; }
+          done
+          (cd "$RUNNER_TEMP/bundle" && zip -r -X "$RUNNER_TEMP/zip/repo-review.zip" repo-review)
       - name: zipの中身を確かめる
         run: |
           for z in "$RUNNER_TEMP"/zip/*.zip; do
