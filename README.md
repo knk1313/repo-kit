@@ -66,11 +66,13 @@ GitHubのリポジトリを整え、診断する作業を、Claude Codeに進め
 
 診断のスキルだけを、Claudeアプリでも使えます。setupとpublishは、手元のGitとGitHub CLIを使うため、アプリでは使えません。
 
-1. [Releases](https://github.com/knk1313/repo-kit/releases)から、使うスキルのzip（`health-check.zip`、`security-audit.zip`など）を取ります。zipは1つにつき1スキルです。zipは、リリースを公開したときにGitHub Actionsが作ります
-2. Claudeアプリの設定の、スキルの画面から、zipを1つずつアップロードします。health-checkを使うなら、深掘りに使う診断のスキルも一緒に入れます
-3. アプリでは、コード実行を有効にし、調べるリポジトリをzipで添付します
+[Releases](https://github.com/knk1313/repo-kit/releases)から、zipを取ります。zipは1つにつき1スキルで、リリースを公開したときにGitHub Actionsが作ります。
 
-新しい版を使うときは、新しい版のzipをアップロードし直します。
+- まとめて使うなら`repo-review.zip`：診断の観点を一つにまとめたスキルです。これ1つで、健康診断も、観点を決めた診断もできます。頼まれた観点の手順だけを読みます
+- 観点ごとに入れるなら`health-check.zip`、`security-audit.zip`など：使うものだけを入れます。health-checkを使うなら、深掘りに使う診断のスキルも一緒に入れます
+- テストを足すなら`test-add.zip`：書き込みを伴うため、`repo-review.zip`には入っていません
+
+zipは、Claudeアプリの設定の、スキルの画面からアップロードします。アプリでは、コード実行を有効にし、調べるリポジトリをzipで添付します。新しい版を使うときは、新しい版のzipをアップロードし直します。
 
 ## 使い方
 
@@ -127,6 +129,8 @@ Claude Codeに組み込みの`/security-review`は、今のブランチの差分
 ```text
 repo-kit/
 ├── .claude-plugin/     # プラグインとして配布するための設定
+├── app/
+│   └── repo-review/    # Claudeアプリ向けにまとめたスキル。Releaseのときに診断のスキルを写して zip にする
 └── skills/
     ├── setup/
     │   ├── SKILL.md

@@ -26,8 +26,13 @@ jobs:
       - run: ruby -ryaml -e 'ARGV.each { |f| YAML.load_file(f) }' skills/setup/assets/dependabot.yml skills/setup/assets/workflows/*.yml .github/*.yml .github/workflows/*.yml
       # SKILL.md の先頭に name と description があり、name がディレクトリ名と一致すること
       - run: |
-          for f in skills/*/SKILL.md; do
+          for f in skills/*/SKILL.md app/*/SKILL.md; do
             head -1 "$f" | grep -qx -- '---' || { echo "$f: frontmatter がない"; exit 1; }
             grep -q '^name: ' "$f" && grep -q '^description: ' "$f" || { echo "$f: name か description がない"; exit 1; }
             grep -qx "name: $(basename "$(dirname "$f")")" "$f" || { echo "$f: name がディレクトリ名と違う"; exit 1; }
+          done
+      # アプリ向けの repo-review が読む references/<名前>.md の元になるスキルが、skills/ にあること
+      - run: |
+          for n in $(grep -o 'references/[a-z0-9-]*\.md' app/repo-review/SKILL.md | sed 's|references/||; s|\.md$||' | sort -u); do
+            [ -f "skills/$n/SKILL.md" ] || { echo "skills/$n/SKILL.md がない（app/repo-review/SKILL.md が参照している）"; exit 1; }
           done
