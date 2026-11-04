@@ -14,6 +14,8 @@ langs=""
 { [ -f requirements.txt ] || [ -f pyproject.toml ] || ls */requirements.txt */pyproject.toml >/dev/null 2>&1; } && langs="$langs python"
 row info "言語" "${langs:- 不明}"
 row info "git" "$(git rev-parse --is-inside-work-tree >/dev/null 2>&1 && echo あり || echo なし)"
+vis=$(gh repo view --json visibility -q .visibility 2>/dev/null || true)
+row info "公開" "${vis:-GitHub にない（または gh 未ログイン）}"
 
 chk .gitignore
 if git grep -qE 'os\.environ|process\.env|getenv|import\.meta\.env' -- ':!*.md' ':!*.sh' ':!*.lock' 2>/dev/null; then
