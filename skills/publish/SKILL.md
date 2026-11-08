@@ -1,6 +1,6 @@
 ---
 name: publish
-description: GitHubのリポジトリを公開する前、または公開済みのリポジトリを整える作業で使う。「公開前に整えて」「publicにする準備」「OSSとして出せる状態にして」「公開して大丈夫か見て」「リポジトリの設定をそろえて」と頼まれたとき、リポジトリを公開・配布する話が出たときに使う。秘密情報と個人情報の検査、作業用ファイルの削除、足りないファイルの追加（setupのテンプレートを使う）、CIの権限の絞り込み、About・topics・mainの保護・secret scanningなどのGitHubの設定、READMEの仕上げと校正までを、点検→修正→設定の順に進める。ファイルを足すだけなら、publishではなくsetupを使う。
+description: GitHubのリポジトリを公開する前、または公開済みのリポジトリを整える作業で使う。「公開前に整えて」「publicにする準備」「OSSとして出せる状態にして」「公開して大丈夫か見て」「リポジトリの設定をそろえて」と頼まれたとき、リポジトリを公開・配布する話が出たときに使う。秘密情報と個人情報の検査、作業用ファイルの削除、足りないファイルの追加（setupのテンプレートを使う。OSSにするならLICENSE・SECURITY.md・CONTRIBUTING.mdも足す）、CIの権限の絞り込み、About・topics・mainの保護・secret scanningなどのGitHubの設定、READMEの仕上げと校正までを、点検→修正→設定の順に進める。ファイルを足すだけなら、publishではなくsetupを使う。
 ---
 
 # publish
@@ -54,11 +54,17 @@ bash <SKILL>/scripts/scan.sh <リポジトリのパス>
 
 ### 足すもの
 
-足りないファイルは、同じプラグインの **setup** スキルの手順とテンプレート（`<SKILL>/../setup/`）で足す。setup の SKILL.md を読み、その「2. テンプレートを埋めて置く」に従う。公開する前なので、setup では「公開を考え始めたら」としている `LICENSE` と `SECURITY.md` も、ここでは必ず足す。
+足りないファイルは、同じプラグインの **setup** スキルの手順とテンプレート（`<SKILL>/../setup/`）で足す。setup の SKILL.md を読み、その「2. テンプレートを埋めて置く」に従う。
 
-`SECURITY.md` は、公開後の使われ方を考えて「想定している使い方」を具体的に書く（ローカルだけで動かすのか、ネットワークに出すのか）。
+public にするリポジトリが、すべて OSS とは限らない。自分用のツールを public に置くだけのこともある。そこで、OSS として出す（他の人に使ってもらい、Issue や PR を受け付ける）かを利用者に聞く。OSS にするときだけ、次の3つを `<SKILL>/assets/` のテンプレートで足す。OSS にしないときは足さず、README のライセンスの節、`package.json` の `license`、非公開の脆弱性報告も扱わない。
 
-`package.json` があれば、`name` をリポジトリ名にそろえ、`description`・`repository`・`license` を足す。
+| 置く先 | テンプレート | リポジトリに合わせること |
+|---|---|---|
+| `LICENSE` | `LICENSE-MIT` | 年と著作権者。著作権者は `git config user.name` か、利用者の他のリポジトリの LICENSE にそろえる。MIT 以外にしたいかは、足す前に聞く |
+| `SECURITY.md` | `SECURITY.md` | 想定している使い方、対象と対象外、owner/repo（`gh repo view --json nameWithOwner` か `git remote`）。公開後の使われ方を考えて「想定している使い方」を具体的に書く（ローカルだけで動かすのか、ネットワークに出すのか） |
+| `CONTRIBUTING.md` | `CONTRIBUTING.md` | `{{CHECK_COMMANDS}}` を CI と同じ検査のコマンドにする。画面があるリポジトリなら、スクリーンショットの決まりを足す。AGENTS.md があれば、冒頭に「人間向けの一般規約（IssueやPRの出し方）は[CONTRIBUTING.md](CONTRIBUTING.md)を参照。」を足す |
+
+`package.json` があれば、`name` をリポジトリ名にそろえ、`description`・`repository` を足す。OSS にするなら `license` も足す。
 
 ### CI
 
@@ -75,7 +81,7 @@ README に次の節があるかを見て、足りないものを書く。
 - 使い方（インストールから最初の実行まで）
 - 動作環境
 - 画面があれば画面の写真（最新の画面で撮り直す）
-- ライセンス（と、使うときの注意があれば）
+- OSS にするなら、ライセンス（と、使うときの注意があれば）
 - テンプレートなど海外の利用者を見込むなら README.en.md
 
 書き終えたら、日本語の文書を docs-rules で校正する。**docs-rules はルールの本文が大きく、スキルを読み込んで手順どおりに進めるとトークンを多く使う。** ここでは `references/docs-polish.md` の軽い手順で校正する。
@@ -89,7 +95,8 @@ README に次の節があるかを見て、足りないものを書く。
 - About：説明、topics、ホームページの URL
 - Wiki を無効にする、マージしたブランチを自動で消す
 - main の保護（Ruleset：削除と force push の禁止、PR 必須、CI の必須チェック）。入れると main に直接 push できなくなるため、承認を得るときにそのことを伝え、設定の最後に入れる
-- secret scanning と push protection、Dependabot alerts と security updates、非公開の脆弱性報告
+- secret scanning と push protection、Dependabot alerts と security updates
+- OSS にするなら、非公開の脆弱性報告（SECURITY.md の報告先）
 - 用途に応じて：テンプレートリポジトリ、Discussions、GitHub Pages、Release
 
 リポジトリを public にする操作は、利用者がはっきり頼んだときだけ、すべての作業の最後に行う。公開していた間に複製された内容は、非公開に戻しても消えない。
