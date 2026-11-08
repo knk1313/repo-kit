@@ -145,7 +145,3 @@ repo-kit/
     │   └── SKILL.md    # 診断のスキルは、どれもSKILL.mdだけ
     └── security-audit/ など、観点ごとの診断のスキル
 ```
-
-## ライセンス
-
-[MIT License](LICENSE)
