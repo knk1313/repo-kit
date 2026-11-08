@@ -21,12 +21,9 @@ chk .gitignore
 if git grep -qE 'os\.environ|process\.env|getenv|import\.meta\.env' -- ':!*.md' ':!*.sh' ':!*.lock' 2>/dev/null; then
   chk .env.example "コードが環境変数を読んでいる"
 else row skip .env.example "環境変数を読むコードが見つからない"; fi
-chk LICENSE
 chk README.md
 chk AGENTS.md
 chk CLAUDE.md
-chk CONTRIBUTING.md
-chk SECURITY.md
 if ls .github/ISSUE_TEMPLATE/*.md >/dev/null 2>&1; then row have .github/ISSUE_TEMPLATE/ "$(ls .github/ISSUE_TEMPLATE | tr '\n' ' ')"
 else row missing .github/ISSUE_TEMPLATE/; fi
 chk .github/pull_request_template.md

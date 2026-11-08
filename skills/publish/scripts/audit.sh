@@ -30,14 +30,18 @@ echo "  - 秘密情報・個人情報・見本データの検査は scan.sh で�
 echo
 
 echo "## 2. ファイル"
-for f in README.md LICENSE SECURITY.md CONTRIBUTING.md .github/pull_request_template.md .github/dependabot.yml; do
+for f in README.md .github/pull_request_template.md .github/dependabot.yml; do
   has "$f" && ok "$f" || ng "$f"
+done
+for f in LICENSE SECURITY.md CONTRIBUTING.md; do
+  has "$f" && ok "$f" || na "${f}（OSS にするときだけ）"
 done
 ls .github/ISSUE_TEMPLATE/*.md >/dev/null 2>&1 && ok ".github/ISSUE_TEMPLATE/ ($(ls .github/ISSUE_TEMPLATE | tr '\n' ' '))" || ng ".github/ISSUE_TEMPLATE/"
 has README.en.md && ok "README.en.md" || na "README.en.md（テンプレートなど海外の利用者を見込むときだけ）"
 has AGENTS.md || has CLAUDE.md && ok "AGENTS.md / CLAUDE.md" || na "AGENTS.md / CLAUDE.md"
 if has README.md; then
-  for kw in "ライセンス|License|利用条件" "使い方|使う|Usage|はじめ方" "動作環境|Requirements|必要"; do
+  grep -qE "^#+ .*(ライセンス|License|利用条件)" README.md && ok "README に「ライセンス」の節" || na "README に「ライセンス」の節がない（OSS にするときだけ）"
+  for kw in "使い方|使う|Usage|はじめ方" "動作環境|Requirements|必要"; do
     grep -qE "^#+ .*($kw)" README.md && ok "README に「${kw%%|*}」の節" || ng "README に「${kw%%|*}」の節がない"
   done
   grep -qE '!\[|<img' README.md && ok "README に画像がある" || na "README に画像がない（画面があるなら撮る）"
@@ -45,7 +49,8 @@ fi
 if has package.json; then
   name=$(jq -r '.name // ""' package.json); repo=$(basename "$(git rev-parse --show-toplevel)")
   [ "$name" = "$repo" ] && ok "package.json の name がリポジトリ名" || ng "package.json の name ($name) がリポジトリ名 ($repo) と違う"
-  for k in description repository license; do jq -e ".$k" package.json >/dev/null && ok "package.json の $k" || ng "package.json に $k がない"; done
+  for k in description repository; do jq -e ".$k" package.json >/dev/null && ok "package.json の $k" || ng "package.json に $k がない"; done
+  jq -e ".license" package.json >/dev/null && ok "package.json の license" || na "package.json に license がない（OSS にするときだけ）"
 fi
 echo
 
@@ -81,7 +86,7 @@ if [ -z "$slug" ]; then na "GitHub 上のリポジトリが見つからない（
     [ "$(echo "$sa" | jq -r ".$k.status // \"\"")" = enabled ] && ok "$k" || ng "$k が無効"
   done
   pv=$(gh api "repos/$slug/private-vulnerability-reporting" -q .enabled 2>/dev/null || echo "?")
-  [ "$pv" = true ] && ok "非公開の脆弱性報告" || ng "非公開の脆弱性報告が無効（SECURITY.md の案内先が動かない）"
+  [ "$pv" = true ] && ok "非公開の脆弱性報告" || { has SECURITY.md && ng "非公開の脆弱性報告が無効（SECURITY.md の案内先が動かない）" || na "非公開の脆弱性報告が無効（OSS にするときだけ）"; }
   nr=$(gh release list -R "$slug" -L 1 2>/dev/null | wc -l | tr -d ' ')
   [ "$nr" -gt 0 ] && ok "Release がある" || na "Release がない（配布物があるならタグを打つ）"
 fi

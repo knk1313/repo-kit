@@ -49,4 +49,4 @@
 - **PR**：`.github/pull_request_template.md`の見出し構成のまま全項目を埋める。
 - **コードのコメント・ドキュメント文字列**：日本語で書く。
 - **スクリプト**：`scripts/`のスクリプトは読み取りだけにする。ファイルやGitHubの設定を変える操作は、SKILL.mdの手順の中で、利用者の承認を得てから行う。
-- **テンプレート**：`skills/setup/assets/`を変えたら、setupとpublishの両方のSKILL.mdの表を見直す。
+- **テンプレート**：`skills/setup/assets/`か`skills/publish/assets/`を変えたら、setupとpublishの両方のSKILL.mdの表を見直す。
