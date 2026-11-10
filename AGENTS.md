@@ -13,16 +13,18 @@
 
 ## コマンド
 
-作業はリポジトリのルートで行う。CIと同じ検査は次のとおり。
+作業はリポジトリのルートで行う。検査は次のとおり。「CI」の列が「回る」のものは、CI（`.github/workflows/ci.yml`）でも同じ検査をする。
 
-| 用途 | コマンド |
-| --- | --- |
-| スクリプトの文法 | `for f in skills/*/scripts/*.sh; do bash -n "$f"; done` |
-| スクリプトの静的検査 | `shellcheck -S warning skills/*/scripts/*.sh` |
-| JSONの検証 | `for f in .claude-plugin/*.json skills/*/assets/*.json; do jq empty "$f"; done` |
-| YAMLの検証 | `ruby -ryaml -e 'ARGV.each { \|f\| YAML.load_file(f) }' skills/setup/assets/dependabot.yml skills/setup/assets/workflows/*.yml .github/*.yml .github/workflows/*.yml` |
-| プラグインの検証 | `claude plugin validate .` |
-| 試しに動かす | `bash skills/setup/scripts/check.sh <リポジトリ>`、`bash skills/publish/scripts/audit.sh <リポジトリ>` |
+| 用途 | コマンド | CI |
+| --- | --- | --- |
+| スクリプトの文法 | `for f in skills/*/scripts/*.sh; do bash -n "$f"; done` | 回る |
+| スクリプトの静的検査 | `shellcheck -S warning skills/*/scripts/*.sh` | 回る |
+| JSONの検証 | `for f in .claude-plugin/*.json skills/*/assets/*.json; do jq empty "$f"; done` | 回る |
+| YAMLの検証 | `ruby -ryaml -e 'ARGV.each { \|f\| YAML.load_file(f) }' skills/setup/assets/dependabot.yml skills/setup/assets/workflows/*.yml .github/*.yml .github/workflows/*.yml` | 回る |
+| SKILL.mdの先頭の検査（`name`と`description`があり、`name`がディレクトリ名と同じ） | `ci.yml`の該当のステップを写して実行する | 回る |
+| `app/repo-review`が参照するスキルの実在 | `ci.yml`の該当のステップを写して実行する | 回る |
+| プラグインの検証 | `claude plugin validate .` | 回らない（手元で実行する） |
+| 試しに動かす | `bash skills/setup/scripts/check.sh <リポジトリ>`、`bash skills/publish/scripts/audit.sh <リポジトリ>` | 回らない |
 
 スキルの手順（SKILL.md）を変えたときは、どこかのリポジトリのコピーで実際にスキルを動かして確かめる。本物のリポジトリやGitHubの設定は変えない。
 

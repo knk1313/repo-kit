@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 開発の土台になるファイルが揃っているかを調べる（読み取りだけ）。
 # 使い方: check.sh [リポジトリのパス]
-# 出力: 1行に1項目。「有無<TAB>パス<TAB>補足」。有無は have / missing / skip。
+# 出力: 1行に1項目。「有無<TAB>パス<TAB>補足」。有無は have / missing / skip / info（info は言語・git・公開の参考の情報で、パスの欄に項目の名前が入る）。
 set -u
 cd "${1:-.}" || { echo "ディレクトリがない: ${1:-.}" >&2; exit 2; }
 

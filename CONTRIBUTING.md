@@ -17,7 +17,7 @@
 
 ## プルリクエストを出す前に
 
-次の検査がすべて通ることを確かめてください。CIでも同じ検査をします。
+次の検査がすべて通ることを確かめてください。最後の`claude plugin validate .`のほかは、CIでも同じ検査をします。CIは、このほかに、SKILL.mdの先頭の`name`と`description`と、`app/repo-review`が参照するスキルの実在も確かめます（[ci.yml](.github/workflows/ci.yml)）。
 
 ```bash
 for f in skills/*/scripts/*.sh; do bash -n "$f"; done
