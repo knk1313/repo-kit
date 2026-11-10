@@ -11,10 +11,10 @@ GitHubのリポジトリを整え、診断する作業を、Claude Codeに進め
 - Issue・PRのテンプレート
 - AGENTS.md、CLAUDE.md（AIエージェント向けの決まり）
 - REVIEW.md（AIのレビューに、何を問題とみなすかを伝える）
-- CONTRIBUTING.md
 - .gitignore、.env.example
 - 権限を読み取りに絞ったCI、Dependabotの設定
-- LICENSE、SECURITY.md
+
+LICENSE、SECURITY.md、CONTRIBUTING.mdは足しません。OSSとして出すと決めたときに、publishで足します。
 
 ### publish：公開する前に整える
 
@@ -22,7 +22,7 @@ GitHubのリポジトリを整え、診断する作業を、Claude Codeに進め
 
 1. 点検：ファイル、CIのワークフロー、GitHubの設定を調べ、足りないものを一覧にする
 2. 秘密情報・個人情報の検査：鍵やトークン、メールアドレス、電話番号、ローカルのパスを、コミット履歴も含めて探す
-3. ファイルの追加と削除：作業用の文書を消し、足りないファイルをsetupのテンプレートで足す
+3. ファイルの追加と削除：作業用の文書を消し、足りないファイルをsetupのテンプレートで足す。OSSにするなら、LICENSE、SECURITY.md、CONTRIBUTING.mdも足す
 4. READMEの仕上げと校正：足りない節を書き、[docs-rules](https://github.com/knk1313/docs-rules)の採点で校正する
 5. GitHubの設定：About、topics、mainの保護、secret scanningなどを、承認を得てから設定する
 
@@ -146,7 +146,3 @@ repo-kit/
     │   └── SKILL.md    # 診断のスキルは、どれもSKILL.mdだけ
     └── security-audit/ など、観点ごとの診断のスキル
 ```
-
-## ライセンス
-
-[MIT License](LICENSE)

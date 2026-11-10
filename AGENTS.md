@@ -5,7 +5,7 @@
 - **Claude Code**：ルートの`CLAUDE.md`が`@AGENTS.md`で取り込む
 - **OpenAI Codex**：ルートの`AGENTS.md`を直接読み込む
 
-人間向けの一般規約（IssueやPRの出し方）は[CONTRIBUTING.md](CONTRIBUTING.md)を参照。本ファイルは、AIが**コードを書く・直す・出す**ときに踏み外してはいけない事項に絞る。
+本ファイルは、AIが**コードを書く・直す・出す**ときに踏み外してはいけない事項に絞る。
 
 ## プロジェクト概要
 
@@ -51,4 +51,4 @@
 - **PR**：`.github/pull_request_template.md`の見出し構成のまま全項目を埋める。
 - **コードのコメント・ドキュメント文字列**：日本語で書く。
 - **スクリプト**：`scripts/`のスクリプトは読み取りだけにする。ファイルやGitHubの設定を変える操作は、SKILL.mdの手順の中で、利用者の承認を得てから行う。
-- **テンプレート**：`skills/setup/assets/`を変えたら、setupとpublishの両方のSKILL.mdの表を見直す。
+- **テンプレート**：`skills/setup/assets/`か`skills/publish/assets/`を変えたら、setupとpublishの両方のSKILL.mdの表を見直す。

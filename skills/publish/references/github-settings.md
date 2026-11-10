@@ -24,7 +24,7 @@ gh api -X PATCH repos/O/R \
   -f 'security_and_analysis[secret_scanning_push_protection][status]=enabled'
 gh api -X PUT repos/O/R/vulnerability-alerts          # Dependabot alerts
 gh api -X PUT repos/O/R/automated-security-fixes      # Dependabot security updates
-gh api -X PUT repos/O/R/private-vulnerability-reporting  # SECURITY.md の報告先
+gh api -X PUT repos/O/R/private-vulnerability-reporting  # SECURITY.md の報告先。OSS にするときだけ
 ```
 
 secret scanning は、非公開のリポジトリでは有料プランでしか有効にできない。公開してから実行する。

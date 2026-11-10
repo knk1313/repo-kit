@@ -1,11 +1,13 @@
 ---
 name: setup
-description: リポジトリに開発の土台になるファイルを足すときに使う。新しく作ったリポジトリでも、開発の途中のリポジトリでも使える。「リポジトリをセットアップして」「Issueテンプレートを入れて」「AGENTS.mdとCLAUDE.mdを作って」「PRテンプレートがほしい」「CIとDependabotを入れて」「いつもの構成にして」「足りないファイルを持ってきて」と頼まれたとき、新しいプロジェクトを始めたときに使う。Issue・PRのテンプレート、AGENTS.md・CLAUDE.md、REVIEW.md、CONTRIBUTING.md、.gitignore、.env.example、LICENSE、SECURITY.md、Dependabot、権限を絞ったCIのうち、足りないものだけを、リポジトリに合わせて埋めて置く。公開の前の点検やGitHubの設定は、このスキルではなくpublishで行う。
+description: リポジトリに開発の土台になるファイルを足すときに使う。新しく作ったリポジトリでも、開発の途中のリポジトリでも使える。「リポジトリをセットアップして」「Issueテンプレートを入れて」「AGENTS.mdとCLAUDE.mdを作って」「PRテンプレートがほしい」「CIとDependabotを入れて」「いつもの構成にして」「足りないファイルを持ってきて」と頼まれたとき、新しいプロジェクトを始めたときに使う。Issue・PRのテンプレート、AGENTS.md・CLAUDE.md、REVIEW.md、.gitignore、.env.example、Dependabot、権限を絞ったCIのうち、足りないものだけを、リポジトリに合わせて埋めて置く。公開の前の点検やGitHubの設定、OSSとして出すときのLICENSE・SECURITY.md・CONTRIBUTING.mdは、このスキルではなくpublishで行う。
 ---
 
 # setup
 
 開発の土台になるファイルのうち、足りないものだけをリポジトリに足す。開発の開始時でも途中でも使える。ファイルを足すだけで、GitHub の設定は変えない（それは publish の仕事）。
+
+`LICENSE`、`SECURITY.md`、`CONTRIBUTING.md` は足さない。リポジトリを OSS にするとは限らないため、OSS として出すと決めたときに publish で足す。
 
 `<SKILL>` は、この SKILL.md があるディレクトリの絶対パス（Claude Code では「Base directory for this skill」）。
 
@@ -25,8 +27,6 @@ bash <SKILL>/scripts/check.sh <リポジトリのパス>
 
 `AGENTS.md` が `create-next-app` などのツールで作られていて、そのツール向けの決まりしか書かれていないことがある。そのときは、ツールの決まりを先頭にそのまま残し、テンプレートの節（コマンド、git 操作、規約など）のうち、ない節を下に足す。
 
-`LICENSE` と `SECURITY.md` を足すかは、`check.sh` の「公開」の行で決める。`PUBLIC` なら足す。`PRIVATE` か GitHub に置いていないときは、利用者に聞く。サイトが公開されていても、リポジトリが公開とは限らない。
-
 | ファイル | 足す時期の目安 |
 |---|---|
 | `.gitignore` | いつでも。最初に足す（秘密情報を誤って追跡しないため） |
@@ -36,8 +36,6 @@ bash <SKILL>/scripts/check.sh <リポジトリのパス>
 | CI（`.github/workflows/`） | テストか lint が一つでもあれば |
 | `.github/dependabot.yml` | 依存パッケージがあれば。GitHub に置くまでは動かないが、置いておいて困ることはない |
 | `REVIEW.md` | AI にレビューさせるとき（`/code-review`、Code Review、repo-kit の診断のスキル）。同じ指摘が繰り返し出始めたら |
-| `CONTRIBUTING.md` | 自分以外が触る、または AI エージェントに Issue・PR を書かせるとき |
-| `LICENSE`、`SECURITY.md` | 公開を考え始めたら。非公開のままなら、利用者に聞いてから |
 
 利用者が「全部」「いつもの構成」と言ったときは、表の全部を足す。
 
@@ -57,9 +55,6 @@ bash <SKILL>/scripts/check.sh <リポジトリのパス>
 | `.github/workflows/ci.yml` | `workflows/ci-node.yml`、`workflows/ci-python.yml` | 実在するスクリプトのステップだけを残す。ない検査を足さない。ビルドが型の検査を兼ねるなら、型の検査のステップは置かない。マニフェストが `web/` などにあるなら `working-directory` を付ける。両方の言語があれば、ファイルを分けて `paths:` で絞る |
 | `.nvmrc`、`.python-version` | なし | CI のテンプレートが読む。今の手元の版（`node -v`、`python3 --version` のメジャー）か、`package.json` の `engines` に合わせる |
 | `.github/dependabot.yml` | `dependabot.yml` | 使うエコシステムのブロックだけを残し、`directory` をマニフェストのある場所にする。`github-actions` は CI があれば残す |
-| `CONTRIBUTING.md` | `CONTRIBUTING.md` | `{{CHECK_COMMANDS}}` を CI と同じ検査のコマンドにする。画面があるリポジトリなら、スクリーンショットの決まりを足す |
-| `LICENSE` | `LICENSE-MIT` | 年と著作権者。著作権者は `git config user.name` か、利用者の他のリポジトリの LICENSE にそろえる。MIT 以外にしたいかは、足す前に聞く |
-| `SECURITY.md` | `SECURITY.md` | 想定している使い方、対象と対象外、owner/repo（`gh repo view --json nameWithOwner` か `git remote`） |
 
 AGENTS.md の規約（git を操作しない、コミットの prefix など）は、利用者のいつもの決まりである。リポジトリに既に別の決まり（英語のコミット、Conventional Commits の scope など）があれば、そちらに合わせて書き換える。
 
