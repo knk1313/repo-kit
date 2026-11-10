@@ -1,6 +1,6 @@
 ---
 name: setup
-description: リポジトリに開発の土台になるファイルを足すときに使う。新しく作ったリポジトリでも、開発の途中のリポジトリでも使える。「リポジトリをセットアップして」「Issueテンプレートを入れて」「AGENTS.mdとCLAUDE.mdを作って」「PRテンプレートがほしい」「CIとDependabotを入れて」「いつもの構成にして」「足りないファイルを持ってきて」と頼まれたとき、新しいプロジェクトを始めたときに使う。Issue・PRのテンプレート、AGENTS.md・CLAUDE.md、CONTRIBUTING.md、.gitignore、.env.example、LICENSE、SECURITY.md、Dependabot、権限を絞ったCIのうち、足りないものだけを、リポジトリに合わせて埋めて置く。公開の前の点検やGitHubの設定は、このスキルではなくpublishで行う。
+description: リポジトリに開発の土台になるファイルを足すときに使う。新しく作ったリポジトリでも、開発の途中のリポジトリでも使える。「リポジトリをセットアップして」「Issueテンプレートを入れて」「AGENTS.mdとCLAUDE.mdを作って」「PRテンプレートがほしい」「CIとDependabotを入れて」「いつもの構成にして」「足りないファイルを持ってきて」と頼まれたとき、新しいプロジェクトを始めたときに使う。Issue・PRのテンプレート、AGENTS.md・CLAUDE.md、REVIEW.md、CONTRIBUTING.md、.gitignore、.env.example、LICENSE、SECURITY.md、Dependabot、権限を絞ったCIのうち、足りないものだけを、リポジトリに合わせて埋めて置く。公開の前の点検やGitHubの設定は、このスキルではなくpublishで行う。
 ---
 
 # setup
@@ -35,6 +35,7 @@ bash <SKILL>/scripts/check.sh <リポジトリのパス>
 | `.github/ISSUE_TEMPLATE/`、`.github/pull_request_template.md` | いつでも |
 | CI（`.github/workflows/`） | テストか lint が一つでもあれば |
 | `.github/dependabot.yml` | 依存パッケージがあれば。GitHub に置くまでは動かないが、置いておいて困ることはない |
+| `REVIEW.md` | AI にレビューさせるとき（`/code-review`、Code Review、repo-kit の診断のスキル）。同じ指摘が繰り返し出始めたら |
 | `CONTRIBUTING.md` | 自分以外が触る、または AI エージェントに Issue・PR を書かせるとき |
 | `LICENSE`、`SECURITY.md` | 公開を考え始めたら。非公開のままなら、利用者に聞いてから |
 
@@ -48,7 +49,8 @@ bash <SKILL>/scripts/check.sh <リポジトリのパス>
 |---|---|---|
 | `.gitignore` | `gitignore-base` | 言語の分を足す（Node：`node_modules/`、`dist/`。Python：`.venv/`、`__pycache__/`、`.pytest_cache/`）。既存の `.gitignore` があれば、足りない行だけを追記する。既存の `.env*` のような行は `.env.example` まで除外してしまうので、その下に `!.env.example` を足し、`git check-ignore -v .env.example` で除外されていないことを確かめる |
 | `.env.example` | なし | コードが読む環境変数の名前を並べ、値は空にする。名前ごとに一行のコメントで用途を書く |
-| `AGENTS.md` | `AGENTS.md` | `{{COMMANDS}}` を、依存のインストール・テスト・lint・ビルド・起動のコマンドの表にする（`package.json` の scripts、`Makefile`、README から拾う）。どこで実行するか（`web/` など）も書く。スクリプトがない用途（テストがない、など）は、行ごと消す。`next build` のようにビルドが型の検査を兼ねるときは、「ビルド（型の検査を含む）」と書く |
+| `AGENTS.md` | `AGENTS.md` | `{{COMMANDS}}` を、依存のインストール・テスト・lint・ビルド・起動のコマンドの表にする（`package.json` の scripts、`Makefile`、README から拾う）。どこで実行するか（`web/` など）も書く。スクリプトがない用途（テストがない、など）は、行ごと消す。`next build` のようにビルドが型の検査を兼ねるときは、「ビルド（型の検査を含む）」と書く。「完了の前に確かめる」の節は、`REVIEW.md` を置かないなら、`REVIEW.md` へのリンクを外して「このファイル」だけにする |
+| `REVIEW.md` | `REVIEW.md` | `{{FAILURES}}` を、このリポジトリで「壊れた」とみなすものの箇条書きにする（例：ドキュメントが実装と違うことを書く、設定が誤った先に向く、データを失う）。`{{SENSITIVE_PATHS}}` を、認証・課金・CI のワークフロー・リリースやインストールの仕組みのパスにする。`{{IGNORED_PATHS}}` を、生成物・ロックファイル・`vendor/` などにする。どれもリポジトリを読んで埋め、該当がなければ「なし」と書く |
 | `CLAUDE.md` | `CLAUDE.md` | そのまま。既に CLAUDE.md があって AGENTS.md がない場合は、CLAUDE.md の中身を AGENTS.md に移して、CLAUDE.md をこのラッパーにするかを利用者に聞く |
 | `.github/ISSUE_TEMPLATE/` | `ISSUE_TEMPLATE/` | そのまま |
 | `.github/pull_request_template.md` | `pull_request_template.md` | そのまま |

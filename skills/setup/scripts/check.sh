@@ -26,6 +26,7 @@ chk README.md
 chk AGENTS.md
 chk CLAUDE.md
 chk CONTRIBUTING.md
+chk REVIEW.md "AI にレビューさせるときの決まり"
 chk SECURITY.md
 if ls .github/ISSUE_TEMPLATE/*.md >/dev/null 2>&1; then row have .github/ISSUE_TEMPLATE/ "$(ls .github/ISSUE_TEMPLATE | tr '\n' ' ')"
 else row missing .github/ISSUE_TEMPLATE/; fi
