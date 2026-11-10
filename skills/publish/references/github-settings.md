@@ -42,6 +42,21 @@ gh api -X PUT repos/O/R/rulesets/<ID> --input ruleset.json
 
 一人で開発するリポジトリでは承認数を 0 にする（自分の PR を自分でマージできるように）。
 
+レビューの扱いは、次の2つを有効にしてある。
+
+- `required_review_thread_resolution`：未解決のレビューのスレッドが残っていると、マージできない。AI のレビュアー（Code Review、Claude Code GitHub Action）の指摘も対象になる。指摘は、直すか、理由を書いてスレッドを閉じる。一人で開発していても効く
+- `dismiss_stale_reviews_on_push`：承認の後に新しいコミットを push すると、承認が外れる。承認は、承認したときのコミットにだけ有効にするため
+
+複数人で開発するなら、承認数を 1 以上にし、`.github/CODEOWNERS` で危ない場所に人間の持ち主を決めて、`require_code_owner_review` を `true` にする。持ち主を決める場所の目安は、CI のワークフロー（`/.github/workflows/`）、認証、課金、リリースやインストールの仕組みである。bot の承認は、必須の承認の数に数えられない。
+
+```text
+# .github/CODEOWNERS の例
+/.github/workflows/  @owner
+/src/auth/           @owner
+```
+
+一人で開発するリポジトリでは、自分の PR を自分で承認できないため、CODEOWNERS の承認を必須にしない。
+
 この Ruleset を入れると、管理者でも main に直接 push できなくなる。変更は、ブランチを切って PR を作り、必須チェックが通ってからマージする流れになる。入れる前に、このことを利用者に伝える。このスキルの作業で残りのコミットがあれば、先に main へ push してから Ruleset を入れる。
 
 ## 公開する

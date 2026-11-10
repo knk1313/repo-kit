@@ -39,6 +39,10 @@ done
 ls .github/ISSUE_TEMPLATE/*.md >/dev/null 2>&1 && ok ".github/ISSUE_TEMPLATE/ ($(ls .github/ISSUE_TEMPLATE | tr '\n' ' '))" || ng ".github/ISSUE_TEMPLATE/"
 has README.en.md && ok "README.en.md" || na "README.en.md（テンプレートなど海外の利用者を見込むときだけ）"
 has AGENTS.md || has CLAUDE.md && ok "AGENTS.md / CLAUDE.md" || na "AGENTS.md / CLAUDE.md"
+has REVIEW.md && ok "REVIEW.md" || na "REVIEW.md（AI にレビューさせるなら置く）"
+if has .github/pull_request_template.md; then
+  grep -qE '戻し方|How to revert' .github/pull_request_template.md && ok "PR テンプレートに戻し方の節" || na "PR テンプレートに確かめたこと・リスク・戻し方の節がない"
+fi
 if has README.md; then
   grep -qE "^#+ .*(ライセンス|License|利用条件)" README.md && ok "README に「ライセンス」の節" || na "README に「ライセンス」の節がない（OSS にするときだけ）"
   for kw in "使い方|使う|Usage|はじめ方" "動作環境|Requirements|必要"; do
@@ -81,6 +85,8 @@ if [ -z "$slug" ]; then na "GitHub 上のリポジトリが見つからない（
   rs=$(gh api "repos/$slug/rulesets" -q 'length' 2>/dev/null || echo 0)
   bp=$(gh api "repos/$slug/branches/$br/protection" >/dev/null 2>&1 && echo yes || echo no)
   if [ "$rs" -gt 0 ] || [ "$bp" = yes ]; then ok "$br の保護（Ruleset ${rs} 件 / Branch protection: ${bp}）"; else ng "$br が保護されていない"; fi
+  tr_=$(gh api "repos/$slug/rules/branches/$br" -q '[.[] | select(.type=="pull_request") | .parameters.required_review_thread_resolution] | any' 2>/dev/null || echo false)
+  [ "$tr_" = true ] && ok "未解決のレビューのスレッドがあるとマージできない" || na "未解決のレビューのスレッドがあってもマージできる（AI のレビューを使うなら Ruleset で必須にする）"
   sa=$(gh api "repos/$slug" -q '.security_and_analysis' 2>/dev/null)
   for k in secret_scanning secret_scanning_push_protection dependabot_security_updates; do
     [ "$(echo "$sa" | jq -r ".$k.status // \"\"")" = enabled ] && ok "$k" || ng "$k が無効"

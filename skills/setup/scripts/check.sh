@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 開発の土台になるファイルが揃っているかを調べる（読み取りだけ）。
 # 使い方: check.sh [リポジトリのパス]
-# 出力: 1行に1項目。「有無<TAB>パス<TAB>補足」。有無は have / missing / skip。
+# 出力: 1行に1項目。「有無<TAB>パス<TAB>補足」。有無は have / missing / skip / info（info は言語・git・公開の参考の情報で、パスの欄に項目の名前が入る）。
 set -u
 cd "${1:-.}" || { echo "ディレクトリがない: ${1:-.}" >&2; exit 2; }
 
@@ -24,6 +24,7 @@ else row skip .env.example "環境変数を読むコードが見つからない"
 chk README.md
 chk AGENTS.md
 chk CLAUDE.md
+chk REVIEW.md "AI にレビューさせるときの決まり"
 if ls .github/ISSUE_TEMPLATE/*.md >/dev/null 2>&1; then row have .github/ISSUE_TEMPLATE/ "$(ls .github/ISSUE_TEMPLATE | tr '\n' ' ')"
 else row missing .github/ISSUE_TEMPLATE/; fi
 chk .github/pull_request_template.md
